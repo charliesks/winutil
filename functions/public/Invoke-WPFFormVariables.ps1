@@ -8,8 +8,8 @@ Function Invoke-WPFFormVariables {
     #If ($global:ReadmeDisplay -ne $true) { Write-Host "If you need to reference this display again, run Get-FormVariables" -ForegroundColor Yellow; $global:ReadmeDisplay = $true }
 
 
-    Write-Host ""
-    Write-Host "       \\\///         "
+    Write-Host ""-Foregroundcolor Red
+    Write-Host "       \\\///         "-Foregroundcolor Red
     Write-Host "      / _  _ \        "
     Write-Host "    (| (.)(.) |)      "
     Write-Host ".-.OOOo--()--oOOO.-.  "
