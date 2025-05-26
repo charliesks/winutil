@@ -25,8 +25,7 @@ Function Show-CTTLogo {
          \_)    ) /       
                (_/        
                
-====Chris Titus Tech=====
-=====Windows Toolbox=====
+=====Sarks Toolbox=====
 "@
 
     Write-Host $asciiArt
