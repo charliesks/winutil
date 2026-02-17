@@ -21,10 +21,6 @@ function Invoke-WinUtilTweaks {
         $KeepServiceStartup = $true
     )
 
-    if ($Checkbox -contains "Toggle") {
-        $CheckBox = $sync.configs.tweaks.$CheckBox
-    }
-
     Write-Debug "Tweaks: $($CheckBox)"
     if($undo) {
         $Values = @{
@@ -54,7 +50,7 @@ function Invoke-WinUtilTweaks {
         $sync.configs.tweaks.$CheckBox.service | ForEach-Object {
             $changeservice = $true
 
-        # The check for !($undo) is required, without it the script will throw an error for accessing unavailable memeber, which's the 'OriginalService' Property
+        # The check for !($undo) is required, without it the script will throw an error for accessing unavailable member, which's the 'OriginalService' Property
             if($KeepServiceStartup -AND !($undo)) {
                 try {
                     # Check if the service exists

@@ -85,7 +85,7 @@
         "content": "AnyDesk",
         "description": "AnyDesk is a remote desktop software that enables users to access and control computers remotely. It is known for its fast connection and low latency.",
         "link": "https://anydesk.com/",
-        "winget": "AnyDeskSoftwareGmbH.AnyDesk"
+        "winget": "AnyDesk.AnyDesk"
     },
     "audacity": {
         "category": "Multimedia Tools",
@@ -143,6 +143,15 @@
         "link": "https://github.com/sharkdp/bat",
         "winget": "sharkdp.bat"
     },
+    "beeper": {
+        "category": "Communications",
+        "choco": "na",
+        "content": "Beeper",
+        "description": "All your chats in one app",
+        "link": "https://www.beeper.com/",
+        "winget": "Beeper.Beeper"
+    },
+
     "bitwarden": {
         "category": "Utilities",
         "choco": "bitwarden",
@@ -246,14 +255,6 @@
         "description": "Chromium is the open-source project that serves as the foundation for various web browsers, including Chrome.",
         "link": "https://github.com/Hibbiki/chromium-win64",
         "winget": "Hibbiki.Chromium"
-    },
-    "arc": {
-        "category": "Browsers",
-        "choco": "na",
-        "content": "Arc",
-        "description": "Arc is a Chromium based browser, known for it's clean and modern design.",
-        "link": "https://arc.net/",
-        "winget": "TheBrowserCompany.Arc"
     },
     "clementine": {
         "category": "Multimedia Tools",
@@ -383,6 +384,22 @@
         "link": "https://discord.com/",
         "winget": "Discord.Discord"
     },
+    "dismtools": {
+        "category": "Microsoft Tools",
+        "choco": "na",
+        "content": "DISMTools",
+        "description": "DISMTools is a fast, customizable GUI for the DISM utility, supporting Windows images from Windows 7 onward. It handles installations on any drive, offers project support, and lets users tweak settings like color modes, language, and DISM versions; powered by both native DISM and a managed DISM API.",
+        "link": "https://github.com/CodingWonders/DISMTools",
+        "winget": "CodingWondersSoftware.DISMTools.Stable"
+    },
+    "ntlite": {
+        "category": "Microsoft Tools",
+        "choco": "ntlite-free",
+        "content": "NTLite",
+        "description": "Integrate updates, drivers, automate Windows and application setup, speedup Windows deployment process and have it all set for the next time.",
+        "link": "https://ntlite.com",
+        "winget": "Nlitesoft.NTLite"
+    },
     "ditto": {
         "category": "Utilities",
         "choco": "ditto",
@@ -503,6 +520,14 @@
         "link": "https://emulationstation.org/",
         "winget": "Emulationstation.Emulationstation"
     },
+    "enteauth": {
+        "category": "Utilities",
+        "choco": "ente-auth",
+        "content": "Ente Auth",
+        "description": "Ente Auth is a free, cross-platform, end-to-end encrypted authenticator app.",
+        "link": "https://ente.io/auth/",
+        "winget": "ente-io.auth-desktop"
+    },
     "epicgames": {
         "category": "Games",
         "choco": "epicgameslauncher",
@@ -526,6 +551,14 @@
         "description": "Cross-platform and open-source Text Expander written in Rust",
         "link": "https://espanso.org/",
         "winget": "Espanso.Espanso"
+    },
+    "ffmpeg": {
+        "category": "Utilities",
+        "choco": "na",
+        "content": "FFmpeg Batch AV Converter",
+        "description": "FFmpeg Batch AV Converter is a universal audio and video encoder, that allows to use the full potential of ffmpeg command line with a few mouse clicks in a convenient GUI with drag and drop, progress information.",
+        "link": "https://ffmpeg-batch.sourceforge.io/",
+        "winget": "eibol.FFmpegBatchAVConverter"
     },
     "falkon": {
         "category": "Browsers",
@@ -555,7 +588,7 @@
         "category": "Multimedia Tools",
         "choco": "ffmpeg-full",
         "content": "FFmpeg (full)",
-        "description": "FFmpeg is a powerful multimedia processing tool that enables users to convert, edit, and stream audio and video files with a vast range of codecs and formats.",
+        "description": "FFmpeg is a powerful multimedia processing tool that enables users to convert, edit, and stream audio and video files with a vast range of codecs and formats. | Note: FFmpeg can not be uninstalled using winget.",
         "link": "https://ffmpeg.org/",
         "winget": "Gyan.FFmpeg"
     },
@@ -823,14 +856,6 @@
         "link": "https://gerardog.github.io/gsudo/",
         "winget": "gerardog.gsudo"
     },
-    "guilded": {
-        "category": "Communications",
-        "choco": "na",
-        "content": "Guilded",
-        "description": "Guilded is a communication and productivity platform that includes chat, scheduling, and collaborative tools for gaming and communities.",
-        "link": "https://www.guilded.gg/",
-        "winget": "Guilded.Guilded"
-    },
     "handbrake": {
         "category": "Multimedia Tools",
         "choco": "handbrake",
@@ -894,6 +919,14 @@
         "description": "HWMonitor is a hardware monitoring program that reads PC systems main health sensors.",
         "link": "https://www.cpuid.com/softwares/hwmonitor.html",
         "winget": "CPUID.HWMonitor"
+    },
+    "imhex": {
+        "category": "Development",
+        "choco": "na",
+        "content": "ImHex (Hex Editor)",
+        "description": "A modern, featureful Hex Editor for Reverse Engineers and Developers.",
+        "link": "https://imhex.werwolv.net/",
+        "winget": "WerWolv.ImHex"
     },
     "imageglass": {
         "category": "Multimedia Tools",
@@ -974,6 +1007,14 @@
         "description": "Amazon Corretto is a no-cost, multiplatform, production-ready distribution of the Open Java Development Kit (OpenJDK).",
         "link": "https://aws.amazon.com/corretto",
         "winget": "Amazon.Corretto.21.JDK"
+    },
+    "java25": {
+        "category": "Development",
+        "choco": "corretto25jdk",
+        "content": "Amazon Corretto 25 (LTS)",
+        "description": "Amazon Corretto is a no-cost, multiplatform, production-ready distribution of the Open Java Development Kit (OpenJDK).",
+        "link": "https://aws.amazon.com/corretto",
+        "winget": "Amazon.Corretto.25.JDK"
     },
     "jdownloader": {
         "category": "Utilities",
@@ -1163,7 +1204,7 @@
         "category": "Communications",
         "choco": "element-desktop",
         "content": "Element",
-        "description": "Element is a client for Matrix—an open network for secure, decentralized communication.",
+        "description": "Element is a client for Matrix; an open network for secure, decentralized communication.",
         "link": "https://element.io/",
         "winget": "Element.Element"
     },
@@ -1509,7 +1550,7 @@
         "content": "OpenRGB",
         "description": "OpenRGB is an open-source RGB lighting control software designed to manage and control RGB lighting for various components and peripherals.",
         "link": "https://openrgb.org/",
-        "winget": "CalcProgrammer1.OpenRGB"
+        "winget": "OpenRGB.OpenRGB"
     },
     "openscad": {
         "category": "Multimedia Tools",
@@ -1550,6 +1591,30 @@
         "description": "ownCloud Desktop is the official desktop client for the ownCloud file synchronization and sharing platform.",
         "link": "https://owncloud.com/desktop-app/",
         "winget": "ownCloud.ownCloudDesktop"
+    },
+    "policyplus": {
+        "category": "Multimedia Tools",
+        "choco": "na",
+        "content": "Policy Plus",
+        "description": "Local Group Policy Editor plus more, for all Windows editions.",
+        "link": "https://github.com/Fleex255/PolicyPlus",
+        "winget": "Fleex255.PolicyPlus"
+    },
+    "potplayer": {
+        "category": "Multimedia Tools",
+        "choco": "na",
+        "content": "PotPlayer",
+        "description": "PotPlayer is a free Windows media player with wide format support, high performance, built-in codecs, and extensive customization options.",
+        "link": "https://potplayer.tv/",
+        "winget": "Daum.PotPlayer"
+    },
+    "processexplorer": {
+        "category": "Microsoft Tools",
+        "choco": "na",
+        "content": "Process Explorer",
+        "description": "Process Explorer is a task manager and system monitor.",
+        "link": "https://learn.microsoft.com/sysinternals/downloads/process-explorer",
+        "winget": "Microsoft.Sysinternals.ProcessExplorer"
     },
     "Paintdotnet": {
         "category": "Multimedia Tools",
@@ -1695,13 +1760,13 @@
         "link": "https://bitsum.com/",
         "winget": "BitSum.ProcessLasso"
     },
-    "spotify": {
-        "category": "Multimedia Tools",
-        "choco": "spotify",
-        "content": "Spotify",
-        "description": "Spotify is a digital music service that gives you access to millions of songs, podcasts, and videos from artists all over the world.",
-        "link": "https://www.spotify.com/",
-        "winget": "Spotify.Spotify"
+    "protonauth": {
+        "category": "Utilities",
+        "choco": "protonauth",
+        "content": "Proton Authenticator",
+        "description": "2FA app from Proton to securely sync and backup 2FA codes.",
+        "link": "https://proton.me/authenticator",
+        "winget": "Proton.ProtonAuthenticator"
     },
     "processmonitor": {
         "category": "Microsoft Tools",
@@ -1749,7 +1814,7 @@
         "content": "Python3",
         "description": "Python is a versatile programming language used for web development, data analysis, artificial intelligence, and more.",
         "link": "https://www.python.org/",
-        "winget": "Python.Python.3.12"
+        "winget": "Python.Python.3.14"
     },
     "qbittorrent": {
         "category": "Utilities",
@@ -1885,7 +1950,7 @@
         "content": "Session",
         "description": "Session is a private and secure messaging app built on a decentralized network for user privacy and data protection.",
         "link": "https://getsession.org/",
-        "winget": "Oxen.Session"
+        "winget": "Session.Session"
     },
     "sharex": {
         "category": "Multimedia Tools",
@@ -1902,6 +1967,14 @@
         "description": "Shell is an expanded context menu tool that adds extra functionality and customization options to the Windows context menu.",
         "link": "https://nilesoft.org/",
         "winget": "Nilesoft.Shell"
+    },
+    "systeminformer": {
+        "category": "Development",
+        "choco": "na",
+        "content": "System Informer",
+        "description": "A free, powerful, multi-purpose tool that helps you monitor system resources, debug software and detect malware.",
+        "link": "https://systeminformer.com/",
+        "winget": "WinsiderSS.SystemInformer"
     },
     "sidequest": {
         "category": "Games",
@@ -1942,14 +2015,6 @@
         "description": "Simplewall is a free and open-source firewall application for Windows. It allows users to control and manage the inbound and outbound network traffic of applications.",
         "link": "https://github.com/henrypp/simplewall",
         "winget": "Henry++.simplewall"
-    },
-    "skype": {
-        "category": "Communications",
-        "choco": "skype",
-        "content": "Skype",
-        "description": "Skype is a widely used communication platform offering video calls, voice calls, and instant messaging services.",
-        "link": "https://www.skype.com/",
-        "winget": "Microsoft.Skype"
     },
     "slack": {
         "category": "Communications",
@@ -2068,8 +2133,8 @@
         "choco": "synctrayzor",
         "content": "SyncTrayzor",
         "description": "Windows tray utility / filesystem watcher / launcher for Syncthing",
-        "link": "https://github.com/canton7/SyncTrayzor/",
-        "winget": "SyncTrayzor.SyncTrayzor"
+        "link": "https://github.com/GermanCoding/SyncTrayzor",
+        "winget": "GermanCoding.SyncTrayzor"
     },
     "sqlmanagementstudio": {
         "category": "Microsoft Tools",
@@ -2169,7 +2234,7 @@
     },
     "thorium": {
         "category": "Browsers",
-        "choco": "na",
+        "choco": "thorium",
         "content": "Thorium Browser AVX2",
         "description": "Browser built for speed over vanilla chromium. It is built with AVX2 optimizations and is the fastest browser on the market.",
         "link": "https://thorium.rocks/",
@@ -2226,8 +2291,8 @@
     "ttaskbar": {
         "category": "Utilities",
         "choco": "translucenttb",
-        "content": "Translucent Taskbar",
-        "description": "Translucent Taskbar is a tool that allows you to customize the transparency of the Windows taskbar.",
+        "content": "TranslucentTB",
+        "description": "TranslucentTB is a tool that allows you to customize the transparency of the Windows taskbar.",
         "link": "https://github.com/TranslucentTB/TranslucentTB",
         "winget": "9PF4KZ2VN4W9"
     },
@@ -2309,7 +2374,7 @@
         "content": "Viber",
         "description": "Viber is a free messaging and calling app with features like group chats, video calls, and more.",
         "link": "https://www.viber.com/",
-        "winget": "Viber.Viber"
+        "winget": "Rakuten.Viber"
     },
     "videomass": {
         "category": "Multimedia Tools",
@@ -2699,7 +2764,7 @@
         "category": "Utilities",
         "choco": "ultravnc",
         "content": "UltraVNC",
-        "description": "UltraVNC is a powerful, easy to use and free - remote pc access softwares - that can display the screen of another computer (via internet or network) on your own screen. The program allows you to use your mouse and keyboard to control the other PC remotely. It means that you can work on a remote computer, as if you were sitting in front of it, right from your current location.",
+        "description": "UltraVNC is a powerful, easy to use and free - remote pc access software - that can display the screen of another computer (via internet or network) on your own screen. The program allows you to use your mouse and keyboard to control the other PC remotely. It means that you can work on a remote computer, as if you were sitting in front of it, right from your current location.",
         "link": "https://uvnc.com/",
         "winget": "uvncbvba.UltraVnc"
     },
@@ -2910,5 +2975,13 @@
         "description": "The modern, privacy-focused, performance-driven browser built on Firefox",
         "link": "https://zen-browser.app/",
         "winget": "Zen-Team.Zen-Browser"
+    },
+    "Zed": {
+        "category": "Development",
+        "choco": "na",
+        "content": "Zed",
+        "description": "Zed is a modern, high-performance code editor designed from the ground up for speed and collaboration.",
+        "link": "https://zed.dev/",
+        "winget": "ZedIndustries.Zed"
     }
 }

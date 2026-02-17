@@ -15,7 +15,7 @@ function Invoke-WPFButton {
     # Use this to get the name of the button
     #[System.Windows.MessageBox]::Show("$Button","Chris Titus Tech's Windows Utility","OK","Info")
     if (-not $sync.ProcessRunning) {
-        Set-WinUtilProgressBar  -label "" -percent 0 -hide $true
+        Set-WinUtilProgressBar  -label "" -percent 0
     }
 
     Switch -Wildcard ($Button) {
@@ -23,6 +23,8 @@ function Invoke-WPFButton {
         "WPFInstall" {Invoke-WPFInstall}
         "WPFUninstall" {Invoke-WPFUnInstall}
         "WPFInstallUpgrade" {Invoke-WPFInstallUpgrade}
+        "WPFCollapseAllCategories" {Invoke-WPFToggleAllCategories -Action "Collapse"}
+        "WPFExpandAllCategories" {Invoke-WPFToggleAllCategories -Action "Expand"}
         "WPFStandard" {Invoke-WPFPresets "Standard" -checkboxfilterpattern "WPFTweak*"}
         "WPFMinimal" {Invoke-WPFPresets "Minimal" -checkboxfilterpattern "WPFTweak*"}
         "WPFClearTweaksSelection" {Invoke-WPFPresets -imported $true -checkboxfilterpattern "WPFTweak*"}
@@ -35,16 +37,18 @@ function Invoke-WPFButton {
         "WPFFeatureInstall" {Invoke-WPFFeatureInstall}
         "WPFPanelDISM" {Invoke-WPFSystemRepair}
         "WPFPanelAutologin" {Invoke-WPFPanelAutologin}
-        "WPFPanelcontrol" {Invoke-WPFControlPanel -Panel $button}
-        "WPFPanelnetwork" {Invoke-WPFControlPanel -Panel $button}
-        "WPFPanelpower" {Invoke-WPFControlPanel -Panel $button}
-        "WPFPanelregion" {Invoke-WPFControlPanel -Panel $button}
-        "WPFPanelsound" {Invoke-WPFControlPanel -Panel $button}
-        "WPFPanelprinter" {Invoke-WPFControlPanel -Panel $button}
-        "WPFPanelsystem" {Invoke-WPFControlPanel -Panel $button}
-        "WPFPaneluser" {Invoke-WPFControlPanel -Panel $button}
-        "WPFPanelGodMode" {Invoke-WPFControlPanel -Panel $button}
-        "WPFUpdatesdefault" {Invoke-WPFFixesUpdate}
+        "WPFPanelComputer" {Invoke-WPFControlPanel -Panel $button}
+        "WPFPanelControl" {Invoke-WPFControlPanel -Panel $button}
+        "WPFPanelNetwork" {Invoke-WPFControlPanel -Panel $button}
+        "WPFPanelPower" {Invoke-WPFControlPanel -Panel $button}
+        "WPFPanelPrinter" {Invoke-WPFControlPanel -Panel $button}
+        "WPFPanelRegion" {Invoke-WPFControlPanel -Panel $button}
+        "WPFPanelRestore" {Invoke-WPFControlPanel -Panel $button}
+        "WPFPanelSound" {Invoke-WPFControlPanel -Panel $button}
+        "WPFPanelSystem" {Invoke-WPFControlPanel -Panel $button}
+        "WPFPanelTimedate" {Invoke-WPFControlPanel -Panel $button}
+        "WPFPanelUser" {Invoke-WPFControlPanel -Panel $button}
+        "WPFUpdatesdefault" {Invoke-WPFUpdatesdefault}
         "WPFFixesUpdate" {Invoke-WPFFixesUpdate}
         "WPFFixesWinget" {Invoke-WPFFixesWinget}
         "WPFRunAdobeCCCleanerTool" {Invoke-WPFRunAdobeCCCleanerTool}
@@ -54,10 +58,7 @@ function Invoke-WPFButton {
         "WPFWinUtilShortcut" {Invoke-WPFShortcut -ShortcutToAdd "WinUtil" -RunAsAdmin $true}
         "WPFGetInstalled" {Invoke-WPFGetInstalled -CheckBox "winget"}
         "WPFGetInstalledTweaks" {Invoke-WPFGetInstalled -CheckBox "tweaks"}
-        "WPFGetIso" {Invoke-MicrowinGetIso}
-        "WPFMicrowin" {Invoke-Microwin}
         "WPFCloseButton" {Invoke-WPFCloseButton}
-        "MicrowinScratchDirBT" {Invoke-ScratchDialog}
         "WPFWinUtilInstallPSProfile" {Invoke-WinUtilInstallPSProfile}
         "WPFWinUtilUninstallPSProfile" {Invoke-WinUtilUninstallPSProfile}
         "WPFWinUtilSSHServer" {Invoke-WPFSSHServer}

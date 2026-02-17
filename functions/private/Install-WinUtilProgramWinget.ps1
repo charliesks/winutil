@@ -30,26 +30,18 @@ Function Install-WinUtilProgramWinget {
     .PARAMETER wingetId
     The Id of the Program that Winget should Install/Uninstall
 
-    .PARAMETER scope
-    Determines the installation mode. Can be "user" or "machine" (For more info look at the winget documentation)
-
-    .PARAMETER credential
-    The PSCredential Object of the user that should be used to run winget
-
     .NOTES
     Invoke Winget uses the public variable $Action defined outside the function to determine if a Program should be installed or removed
     #>
         param (
-            [string]$wingetId,
-            [string]$scope = "",
-            [PScredential]$credential = $null
+            [string]$wingetId
         )
 
         $commonArguments = "--id $wingetId --silent"
         $arguments = if ($Action -eq "Install") {
-            "install $commonArguments --accept-source-agreements --accept-package-agreements $(if ($scope) {" --scope $scope"})"
+            "install $commonArguments --accept-source-agreements --accept-package-agreements --source winget"
         } else {
-            "uninstall $commonArguments"
+            "uninstall $commonArguments --source winget"
         }
 
         $processParams = @{
@@ -58,10 +50,6 @@ Function Install-WinUtilProgramWinget {
             Wait = $true
             PassThru = $true
             NoNewWindow = $true
-        }
-
-        if ($credential) {
-            $processParams.credential = $credential
         }
 
         return (Start-Process @processParams).ExitCode
@@ -87,28 +75,6 @@ Function Install-WinUtilProgramWinget {
             return $true
         }
 
-        Write-Host "Attempt installation of $($Program) with User scope"
-        $status = Invoke-Winget -wingetId $Program -scope "user"
-        if ($status -eq 0) {
-            Write-Host "$($Program) installed successfully with User scope."
-            return $true
-        } elseif ($status -eq -1978335189) {
-            Write-Host "$($Program) No applicable update found"
-            return $true
-        }
-
-        $userChoice = [System.Windows.MessageBox]::Show("Do you want to attempt $($Program) installation with specific user credentials? Select 'Yes' to proceed or 'No' to skip.", "User credential Prompt", [System.Windows.MessageBoxButton]::YesNo)
-        if ($userChoice -eq 'Yes') {
-            $getcreds = Get-Credential
-            $status = Invoke-Winget -wingetId $Program -credential $getcreds
-            if ($status -eq 0) {
-                Write-Host "$($Program) installed successfully with User prompt."
-                return $true
-            }
-        } else {
-            Write-Host "Skipping installation with specific user credentials."
-        }
-
         Write-Host "Failed to install $($Program)."
         return $false
     }
@@ -122,7 +88,7 @@ Function Install-WinUtilProgramWinget {
         The Winget ID of the Program that should be uninstalled
         #>
         param (
-            [psobject]$Program
+            [string]$Program
         )
 
         try {

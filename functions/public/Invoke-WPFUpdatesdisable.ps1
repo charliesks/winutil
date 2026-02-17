@@ -8,28 +8,49 @@ function Invoke-WPFUpdatesdisable {
         Disabling Windows Update is not recommended. This is only for advanced users who know what they are doing.
 
     #>
-    If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU")) {
-        New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Force | Out-Null
-    }
+    $ErrorActionPreference = 'SilentlyContinue'
+
+    Write-Host "Configuring registry settings..." -ForegroundColor Yellow
+    New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Force
+
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "NoAutoUpdate" -Type DWord -Value 1
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "AUOptions" -Type DWord -Value 1
-    If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config")) {
-        New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" -Force | Out-Null
-    }
+
+    New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" -Force
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" -Name "DODownloadMode" -Type DWord -Value 0
 
-    $services = @(
-        "BITS"
-        "wuauserv"
-    )
+    Write-Host "Disabled BITS Service"
+    Set-Service -Name BITS -StartupType Disabled
 
-    foreach ($service in $services) {
-        # -ErrorAction SilentlyContinue is so it doesn't write an error to stdout if a service doesn't exist
+    Write-Host "Disabled wuauserv Service"
+    Set-Service -Name wuauserv -StartupType Disabled
 
-        Write-Host "Setting $service StartupType to Disabled"
-        Get-Service -Name $service -ErrorAction SilentlyContinue | Set-Service -StartupType Disabled
+    Write-Host "Disabled UsoSvc Service"
+    Set-Service -Name UsoSvc -StartupType Disabled
+
+    Write-Host "Disabled WaaSMedicSvc Service"
+    Set-Service -Name WaaSMedicSvc -StartupType Disabled
+
+    Remove-Item "C:\Windows\SoftwareDistribution\*" -Recurse -Force
+    Write-Host "Cleared SoftwareDistribution folder"
+
+    Write-Host "Disabling update related scheduled tasks..." -ForegroundColor Yellow
+
+    $Tasks =
+        '\Microsoft\Windows\InstallService\*',
+        '\Microsoft\Windows\UpdateOrchestrator\*',
+        '\Microsoft\Windows\UpdateAssistant\*',
+        '\Microsoft\Windows\WaaSMedic\*',
+        '\Microsoft\Windows\WindowsUpdate\*',
+        '\Microsoft\WindowsUpdate\*'
+
+    foreach ($Task in $Tasks) {
+        Get-ScheduledTask -TaskPath $Task | Disable-ScheduledTask -ErrorAction SilentlyContinue
     }
-    Write-Host "================================="
-    Write-Host "---   Updates ARE DISABLED    ---"
-    Write-Host "================================="
+
+    Write-Host "=================================" -ForegroundColor Green
+    Write-Host "---   Updates Are Disabled    ---" -ForegroundColor Green
+    Write-Host "=================================" -ForegroundColor Green
+
+    Write-Host "Note: You must restart your system in order for all changes to take effect." -ForegroundColor Yellow
 }

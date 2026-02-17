@@ -10,8 +10,8 @@
         WindowStyle="None"
         Width="Auto"
         Height="Auto"
-        MaxWidth="1380"
-        MaxHeight="800"
+        MinWidth="800"
+        MinHeight="600"
         Title="WinUtil">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="0" CornerRadius="10"/>
@@ -23,7 +23,7 @@
         <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
         <Setter Property="MaxWidth" Value="{DynamicResource ToolTipWidth}"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Padding" Value="5"/>
+        <Setter Property="Padding" Value="2"/>
         <Setter Property="FontSize" Value="{DynamicResource FontSize}"/>
         <Setter Property="FontFamily" Value="{DynamicResource FontFamily}"/>
         <!-- This ContentTemplate ensures that the content of the ToolTip wraps text properly for better readability -->
@@ -85,7 +85,7 @@
     <Style x:Key="AppEntryBorderStyle" TargetType="Border">
         <Setter Property="BorderBrush" Value="Gray"/>
         <Setter Property="BorderThickness" Value="{DynamicResource AppEntryBorderThickness}"/>
-        <Setter Property="CornerRadius" Value="5"/>
+        <Setter Property="CornerRadius" Value="2"/>
         <Setter Property="Padding" Value="{DynamicResource AppEntryMargin}"/>
         <Setter Property="Width" Value="{DynamicResource AppEntryWidth}"/>
         <Setter Property="VerticalAlignment" Value="Top"/>
@@ -101,10 +101,30 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="CheckBox">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment="Left"
-                                    Margin="{TemplateBinding Padding}"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Grid Width="16" Height="16" Margin="0,0,8,0">
+                            <Border x:Name="CheckBoxBorder"
+                                    BorderBrush="{DynamicResource MainForegroundColor}"
+                                    Background="{DynamicResource ButtonBackgroundColor}"
+                                    BorderThickness="1"
+                                    Width="12"
+                                    Height="12"
+                                    CornerRadius="2"/>
+                            <Path x:Name="CheckMark"
+                                  Stroke="{DynamicResource ToggleButtonOnColor}"
+                                  StrokeThickness="2"
+                                  Data="M 2 8 L 6 12 L 14 4"
+                                  Visibility="Collapsed"/>
+                        </Grid>
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Left"/>
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -163,6 +183,7 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+
 
     </Style>
     <Style TargetType="Button" x:Key="HoverButtonStyle">
@@ -532,13 +553,20 @@
                                                 BorderThickness="1"
                                                 Width="{DynamicResource CheckBoxBulletDecoratorSize *0.85}"
                                                 Height="{DynamicResource CheckBoxBulletDecoratorSize *0.85}"
-                                                Margin="2"
+                                                Margin="1"
                                                 SnapsToDevicePixels="True"/>
-                                        <Path x:Name="CheckMark"
-                                              Stroke="{DynamicResource ToggleButtonOnColor}"
-                                              StrokeThickness="2"
-                                              Data="M 0 5 L 5 10 L 12 0"
-                                              Visibility="Collapsed"/>
+                                        <Viewbox x:Name="CheckMarkContainer"
+                                                Width="{DynamicResource CheckBoxBulletDecoratorSize}"
+                                                Height="{DynamicResource CheckBoxBulletDecoratorSize}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Visibility="Collapsed">
+                                            <Path x:Name="CheckMark"
+                                                  Stroke="{DynamicResource ToggleButtonOnColor}"
+                                                  StrokeThickness="1.5"
+                                                  Data="M 0 5 L 5 10 L 12 0"
+                                                  Stretch="Uniform"/>
+                                        </Viewbox>
                                     </Grid>
                                 </BulletDecorator.Bullet>
                                 <ContentPresenter Margin="4,0,0,0"
@@ -549,7 +577,7 @@
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
+                                <Setter TargetName="CheckMarkContainer" Property="Visibility" Value="Visible"/>
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <!--Setter TargetName="Border" Property="Background" Value="{DynamicResource ButtonBackgroundPressedColor}"/-->
@@ -569,22 +597,24 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="RadioButton">
                         <StackPanel Orientation="Horizontal" Margin="{DynamicResource CheckBoxMargin}">
-                            <Grid Width="14" Height="14">
-                                <Ellipse x:Name="OuterCircle"
-                                        Stroke="{DynamicResource ToggleButtonOffColor}"
-                                        Fill="{DynamicResource ButtonBackgroundColor}"
-                                        StrokeThickness="1"
-                                        Width="14"
-                                        Height="14"
-                                        SnapsToDevicePixels="True"/>
-                                <Ellipse x:Name="InnerCircle"
-                                        Fill="{DynamicResource ToggleButtonOnColor}"
-                                        Width="8"
-                                        Height="8"
-                                        Visibility="Collapsed"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"/>
-                            </Grid>
+                            <Viewbox Width="{DynamicResource CheckBoxBulletDecoratorSize}" Height="{DynamicResource CheckBoxBulletDecoratorSize}">
+                                <Grid Width="14" Height="14">
+                                    <Ellipse x:Name="OuterCircle"
+                                            Stroke="{DynamicResource ToggleButtonOffColor}"
+                                            Fill="{DynamicResource ButtonBackgroundColor}"
+                                            StrokeThickness="1"
+                                            Width="14"
+                                            Height="14"
+                                            SnapsToDevicePixels="True"/>
+                                    <Ellipse x:Name="InnerCircle"
+                                            Fill="{DynamicResource ToggleButtonOnColor}"
+                                            Width="8"
+                                            Height="8"
+                                            Visibility="Collapsed"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"/>
+                                </Grid>
+                            </Viewbox>
                             <ContentPresenter Margin="4,0,0,0"
                                             VerticalAlignment="Center"
                                             RecognizesAccessKey="True"/>
@@ -801,6 +831,7 @@
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="CaretBrush" Value="{DynamicResource MainForegroundColor}"/>
             <Setter Property="ContextMenu">
                 <Setter.Value>
                     <ContextMenu>
@@ -855,6 +886,7 @@
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="CaretBrush" Value="{DynamicResource MainForegroundColor}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="PasswordBox">
@@ -890,150 +922,108 @@
     </Window.Resources>
     <Grid Background="{DynamicResource MainBackgroundColor}" ShowGridLines="False" Name="WPFMainGrid" Width="Auto" Height="Auto" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
-            <RowDefinition Height="{DynamicResource TabRowHeightInPixels}"/>
-            <RowDefinition Height=".9*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <DockPanel Name="NavDockPanel" HorizontalAlignment="Stretch" Background="{DynamicResource MainBackgroundColor}" SnapsToDevicePixels="True" Grid.Row="0" Width="Auto">
-            <StackPanel Name="NavLogoPanel" Orientation="Horizontal" HorizontalAlignment="Left" Background="{DynamicResource MainBackgroundColor}" SnapsToDevicePixels="True" Margin="10,0,20,0">
+        <Grid Grid.Row="0" Background="{DynamicResource MainBackgroundColor}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/> <!-- Navigation buttons -->
+                <ColumnDefinition Width="*"/> <!-- Search bar and buttons -->
+            </Grid.ColumnDefinitions>
+
+            <!-- Navigation Buttons Panel -->
+            <StackPanel Name="NavDockPanel" Orientation="Horizontal" Grid.Column="0" Margin="5,5,10,5">
+                <StackPanel Name="NavLogoPanel" Orientation="Horizontal" HorizontalAlignment="Left" Background="{DynamicResource MainBackgroundColor}" SnapsToDevicePixels="True" Margin="10,0,20,0">
+                </StackPanel>
+                <ToggleButton Margin="0,0,5,0" Height="{DynamicResource TabButtonHeight}" Width="{DynamicResource TabButtonWidth}"
+                    Background="{DynamicResource ButtonInstallBackgroundColor}" Foreground="white" FontWeight="Bold" Name="WPFTab1BT">
+                    <ToggleButton.Content>
+                        <TextBlock FontSize="{DynamicResource TabButtonFontSize}" Background="Transparent" Foreground="{DynamicResource ButtonInstallForegroundColor}" >
+                            <Underline>I</Underline>nstall
+                        </TextBlock>
+                    </ToggleButton.Content>
+                </ToggleButton>
+                <ToggleButton Margin="0,0,5,0" Height="{DynamicResource TabButtonHeight}" Width="{DynamicResource TabButtonWidth}"
+                    Background="{DynamicResource ButtonTweaksBackgroundColor}" Foreground="{DynamicResource ButtonTweaksForegroundColor}" FontWeight="Bold" Name="WPFTab2BT">
+                    <ToggleButton.Content>
+                        <TextBlock FontSize="{DynamicResource TabButtonFontSize}" Background="Transparent" Foreground="{DynamicResource ButtonTweaksForegroundColor}">
+                            <Underline>T</Underline>weaks
+                        </TextBlock>
+                    </ToggleButton.Content>
+                </ToggleButton>
+                <ToggleButton Margin="0,0,5,0" Height="{DynamicResource TabButtonHeight}" Width="{DynamicResource TabButtonWidth}"
+                    Background="{DynamicResource ButtonConfigBackgroundColor}" Foreground="{DynamicResource ButtonConfigForegroundColor}" FontWeight="Bold" Name="WPFTab3BT">
+                    <ToggleButton.Content>
+                        <TextBlock FontSize="{DynamicResource TabButtonFontSize}" Background="Transparent" Foreground="{DynamicResource ButtonConfigForegroundColor}">
+                            <Underline>C</Underline>onfig
+                        </TextBlock>
+                    </ToggleButton.Content>
+                </ToggleButton>
+                <ToggleButton Margin="0,0,5,0" Height="{DynamicResource TabButtonHeight}" Width="{DynamicResource TabButtonWidth}"
+                    Background="{DynamicResource ButtonUpdatesBackgroundColor}" Foreground="{DynamicResource ButtonUpdatesForegroundColor}" FontWeight="Bold" Name="WPFTab4BT">
+                    <ToggleButton.Content>
+                        <TextBlock FontSize="{DynamicResource TabButtonFontSize}" Background="Transparent" Foreground="{DynamicResource ButtonUpdatesForegroundColor}">
+                            <Underline>U</Underline>pdates
+                        </TextBlock>
+                    </ToggleButton.Content>
+                </ToggleButton>
             </StackPanel>
-            <ToggleButton Margin="0,0,5,0" HorizontalAlignment="Left" Height="{DynamicResource TabButtonHeight}" Width="{DynamicResource TabButtonWidth}"
-                Background="{DynamicResource ButtonInstallBackgroundColor}" Foreground="white" FontWeight="Bold" Name="WPFTab1BT">
-                <ToggleButton.Content>
-                    <TextBlock FontSize="{DynamicResource TabButtonFontSize}" Background="Transparent" Foreground="{DynamicResource ButtonInstallForegroundColor}" >
-                        <Underline>I</Underline>nstall
-                    </TextBlock>
-                </ToggleButton.Content>
-            </ToggleButton>
-            <ToggleButton Margin="0,0,5,0" HorizontalAlignment="Left" Height="{DynamicResource TabButtonHeight}" Width="{DynamicResource TabButtonWidth}"
-                Background="{DynamicResource ButtonTweaksBackgroundColor}" Foreground="{DynamicResource ButtonTweaksForegroundColor}" FontWeight="Bold" Name="WPFTab2BT">
-                <ToggleButton.Content>
-                    <TextBlock FontSize="{DynamicResource TabButtonFontSize}" Background="Transparent" Foreground="{DynamicResource ButtonTweaksForegroundColor}">
-                        <Underline>T</Underline>weaks
-                    </TextBlock>
-                </ToggleButton.Content>
-            </ToggleButton>
-            <ToggleButton Margin="0,0,5,0" HorizontalAlignment="Left" Height="{DynamicResource TabButtonHeight}" Width="{DynamicResource TabButtonWidth}"
-                Background="{DynamicResource ButtonConfigBackgroundColor}" Foreground="{DynamicResource ButtonConfigForegroundColor}" FontWeight="Bold" Name="WPFTab3BT">
-                <ToggleButton.Content>
-                    <TextBlock FontSize="{DynamicResource TabButtonFontSize}" Background="Transparent" Foreground="{DynamicResource ButtonConfigForegroundColor}">
-                        <Underline>C</Underline>onfig
-                    </TextBlock>
-                </ToggleButton.Content>
-            </ToggleButton>
-            <ToggleButton Margin="0,0,5,0" HorizontalAlignment="Left" Height="{DynamicResource TabButtonHeight}" Width="{DynamicResource TabButtonWidth}"
-                Background="{DynamicResource ButtonUpdatesBackgroundColor}" Foreground="{DynamicResource ButtonUpdatesForegroundColor}" FontWeight="Bold" Name="WPFTab4BT">
-                <ToggleButton.Content>
-                    <TextBlock FontSize="{DynamicResource TabButtonFontSize}" Background="Transparent" Foreground="{DynamicResource ButtonUpdatesForegroundColor}">
-                        <Underline>U</Underline>pdates
-                    </TextBlock>
-                </ToggleButton.Content>
-            </ToggleButton>
-            <ToggleButton Margin="0,0,5,0" HorizontalAlignment="Left" Height="{DynamicResource TabButtonHeight}" Width="{DynamicResource TabButtonWidth}"
-                Background="{DynamicResource ButtonUpdatesBackgroundColor}" Foreground="{DynamicResource ButtonUpdatesForegroundColor}" FontWeight="Bold" Name="WPFTab5BT">
-                <ToggleButton.Content>
-                    <TextBlock FontSize="{DynamicResource TabButtonFontSize}" Background="Transparent" Foreground="{DynamicResource ButtonUpdatesForegroundColor}">
-                        <Underline>M</Underline>icroWin
-                    </TextBlock>
-                </ToggleButton.Content>
-            </ToggleButton>
-            <Grid Name="GridBesideNavDockPanel" Background="{DynamicResource MainBackgroundColor}" ShowGridLines="False" Width="Auto" Height="Auto" HorizontalAlignment="Stretch">
+
+            <!-- Search Bar and Action Buttons -->
+            <Grid Name="GridBesideNavDockPanel" Grid.Column="1" Background="{DynamicResource MainBackgroundColor}" ShowGridLines="False" Height="Auto">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/> <!-- Main content area -->
-                    <ColumnDefinition Width="Auto"/><!-- Space for options button -->
-                    <ColumnDefinition Width="Auto"/><!-- Space for close button -->
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="2*"/> <!-- Search bar area - priority space -->
+                    <ColumnDefinition Width="Auto"/><!-- Buttons area -->
                 </Grid.ColumnDefinitions>
 
-                <!--
-                  TODO:
-                    Make this SearchBar TextBox Position itself and still
-                    house the Magnifying Glass Character in place,
-                    even if that Magnifying Icon changed its Size,
-                    it should be positioned relative to the SearchBar.
-                    Consider using a Math Solver, will help in making
-                    development of these things much easier
-                -->
-                <TextBox
-                    Grid.Column="0"
-                    Width="{DynamicResource SearchBarWidth}"
-                    Height="{DynamicResource SearchBarHeight}"
-                    FontSize="{DynamicResource SearchBarTextBoxFontSize}"
-                    VerticalAlignment="Center" HorizontalAlignment="Left"
-                    BorderThickness="1"
-                    Name="SearchBar"
-                    Foreground="{DynamicResource MainForegroundColor}" Background="{DynamicResource MainBackgroundColor}"
-                    Padding="3,3,30,0"
-                    Margin="5,0,0,0"
-                    ToolTip="Press Ctrl-F and type app name to filter application list below. Press Esc to reset the filter">
-                </TextBox>
-                <TextBlock
-                    Grid.Column="0"
-                    VerticalAlignment="Center" HorizontalAlignment="Left"
-                    FontFamily="Segoe MDL2 Assets"
-                    Foreground="{DynamicResource ButtonBackgroundSelectedColor}"
-                    FontSize="{DynamicResource IconFontSize}"
-                    Margin="180,0,0,0">&#xE721;
-                </TextBlock>
-                <!--
-                  TODO:
-                    Make this ClearButton Positioning react to
-                    SearchBar Width Value changing, so it'll look correct.
-                    Consider using a Math Solver, will help in making
-                    development of these things much easier
-                -->
+                <Border Grid.Column="0" Margin="5,0,0,0" Width="{DynamicResource SearchBarWidth}" Height="{DynamicResource SearchBarHeight}" VerticalAlignment="Center" HorizontalAlignment="Left">
+                    <Grid>
+                        <TextBox
+                            Width="{DynamicResource SearchBarWidth}"
+                            Height="{DynamicResource SearchBarHeight}"
+                            FontSize="{DynamicResource SearchBarTextBoxFontSize}"
+                            VerticalAlignment="Center" HorizontalAlignment="Left"
+                            BorderThickness="1"
+                            Name="SearchBar"
+                            Foreground="{DynamicResource MainForegroundColor}" Background="{DynamicResource MainBackgroundColor}"
+                            Padding="3,3,30,0"
+                            ToolTip="Press Ctrl-F and type app name to filter application list below. Press Esc to reset the filter">
+                        </TextBox>
+                        <TextBlock
+                            VerticalAlignment="Center" HorizontalAlignment="Right"
+                            FontFamily="Segoe MDL2 Assets"
+                            Foreground="{DynamicResource ButtonBackgroundSelectedColor}"
+                            FontSize="{DynamicResource IconFontSize}"
+                            Margin="0,0,8,0" Width="Auto" Height="Auto">&#xE721;
+                        </TextBlock>
+                    </Grid>
+                </Border>
                 <Button Grid.Column="0"
                     VerticalAlignment="Center" HorizontalAlignment="Left"
                     Name="SearchBarClearButton"
                     Style="{StaticResource SearchBarClearButtonStyle}"
-                    Margin="210,0,0,0" Visibility="Collapsed">
+                    Margin="213,0,0,0" Visibility="Collapsed">
                 </Button>
 
-                <ProgressBar
-                    Grid.Column="1"
-                    Minimum="0"
-                    Maximum="100"
-                    Width="250"
-                    Height="{DynamicResource SearchBarHeight}"
-                    Foreground="{DynamicResource ProgressBarForegroundColor}" Background="{DynamicResource ProgressBarBackgroundColor}" BorderBrush="{DynamicResource ProgressBarForegroundColor}"
-                    Visibility="Collapsed"
-                    VerticalAlignment="Center" HorizontalAlignment="Left"
-                    Margin="2,0,0,0" BorderThickness="1" Padding="6,2,2,2"
-                    Name="ProgressBar">
-                </ProgressBar>
-                <Label
-                    Grid.Column="1"
-                    Width="250"
-                    Height="{DynamicResource SearchBarHeight}"
-                    VerticalAlignment="Center" HorizontalAlignment="Left"
-                    FontSize="{DynamicResource SearchBarTextBoxFontSize}"
-                    Background="Transparent"
-                    Visibility="Collapsed"
-                    Margin="2,0,0,0" BorderThickness="0" Padding="6,2,2,2"
-                    Name="ProgressBarLabel">
-                    <TextBlock
-                        TextTrimming="CharacterEllipsis"
-                        Background="Transparent"
-                        Foreground="{DynamicResource ProgressBarTextColor}">
-                    </TextBlock>
-                </Label>
-                <Button Name="ThemeButton"
-                    Style="{StaticResource HoverButtonStyle}"
-                    Grid.Column="2" BorderBrush="Transparent"
+                <!-- Buttons Container -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5,5,5,5">
+                    <Button Name="ThemeButton"
+                        Style="{StaticResource HoverButtonStyle}"
+                        BorderBrush="Transparent"
                     Background="{DynamicResource MainBackgroundColor}"
                     Foreground="{DynamicResource MainForegroundColor}"
                     FontSize="{DynamicResource SettingsIconFontSize}"
                     Width="{DynamicResource IconButtonSize}" Height="{DynamicResource IconButtonSize}"
                     HorizontalAlignment="Right" VerticalAlignment="Top"
-                    Margin="0,5,5,0"
+                    Margin="0,0,2,0"
                     FontFamily="Segoe MDL2 Assets"
                     Content="N/A"
                     ToolTip="Change the Winutil UI Theme"
                 />
-                <Popup Grid.Column="2" Name="ThemePopup"
+                    <Popup Name="ThemePopup"
                     IsOpen="False"
                     PlacementTarget="{Binding ElementName=ThemeButton}" Placement="Bottom"
                     HorizontalAlignment="Right" VerticalAlignment="Top">
@@ -1058,18 +1048,86 @@
                     </Border>
                 </Popup>
 
-                <Button Name="SettingsButton"
-                    Style="{StaticResource HoverButtonStyle}"
-                    Grid.Column="3" BorderBrush="Transparent"
+                    <Button Name="FontScalingButton"
+                        Style="{StaticResource HoverButtonStyle}"
+                        BorderBrush="Transparent"
                     Background="{DynamicResource MainBackgroundColor}"
                     Foreground="{DynamicResource MainForegroundColor}"
                     FontSize="{DynamicResource SettingsIconFontSize}"
                     Width="{DynamicResource IconButtonSize}" Height="{DynamicResource IconButtonSize}"
                     HorizontalAlignment="Right" VerticalAlignment="Top"
-                    Margin="5,5,5,0"
+                    Margin="0,0,2,0"
+                    FontFamily="Segoe MDL2 Assets"
+                    Content="&#xE8D3;"
+                    ToolTip="Adjust Font Scaling for Accessibility"
+                />
+                    <Popup Name="FontScalingPopup"
+                    IsOpen="False"
+                    PlacementTarget="{Binding ElementName=FontScalingButton}" Placement="Bottom"
+                    HorizontalAlignment="Right" VerticalAlignment="Top">
+                    <Border Background="{DynamicResource MainBackgroundColor}" BorderBrush="{DynamicResource MainForegroundColor}" BorderThickness="1" CornerRadius="0" Margin="0">
+                        <StackPanel Background="{DynamicResource MainBackgroundColor}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinWidth="200">
+                            <TextBlock Text="Font Scaling"
+                                       FontSize="{DynamicResource ButtonFontSize}"
+                                       Foreground="{DynamicResource MainForegroundColor}"
+                                       HorizontalAlignment="Center"
+                                       Margin="10,5,10,5"
+                                       FontWeight="Bold"/>
+                            <Separator Margin="5,0,5,5"/>
+                            <StackPanel Orientation="Horizontal" Margin="10,5,10,10">
+                                <TextBlock Text="Small"
+                                           FontSize="{DynamicResource ButtonFontSize}"
+                                           Foreground="{DynamicResource MainForegroundColor}"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,10,0"/>
+                                <Slider Name="FontScalingSlider"
+                                        Minimum="0.75" Maximum="2.0"
+                                        Value="1.0"
+                                        TickFrequency="0.25"
+                                        TickPlacement="BottomRight"
+                                        IsSnapToTickEnabled="True"
+                                        Width="120"
+                                        VerticalAlignment="Center"/>
+                                <TextBlock Text="Large"
+                                           FontSize="{DynamicResource ButtonFontSize}"
+                                           Foreground="{DynamicResource MainForegroundColor}"
+                                           VerticalAlignment="Center"
+                                           Margin="10,0,0,0"/>
+                            </StackPanel>
+                            <TextBlock Name="FontScalingValue"
+                                       Text="100%"
+                                       FontSize="{DynamicResource ButtonFontSize}"
+                                       Foreground="{DynamicResource MainForegroundColor}"
+                                       HorizontalAlignment="Center"
+                                       Margin="10,0,10,5"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10,0,10,10">
+                                <Button Name="FontScalingResetButton"
+                                        Content="Reset"
+                                        Style="{StaticResource HoverButtonStyle}"
+                                        Width="60" Height="25"
+                                        Margin="5,0,5,0"/>
+                                <Button Name="FontScalingApplyButton"
+                                        Content="Apply"
+                                        Style="{StaticResource HoverButtonStyle}"
+                                        Width="60" Height="25"
+                                        Margin="5,0,5,0"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Popup>
+
+                    <Button Name="SettingsButton"
+                        Style="{StaticResource HoverButtonStyle}"
+                        BorderBrush="Transparent"
+                    Background="{DynamicResource MainBackgroundColor}"
+                    Foreground="{DynamicResource MainForegroundColor}"
+                    FontSize="{DynamicResource SettingsIconFontSize}"
+                    Width="{DynamicResource IconButtonSize}" Height="{DynamicResource IconButtonSize}"
+                    HorizontalAlignment="Right" VerticalAlignment="Top"
+                    Margin="0,0,2,0"
                     FontFamily="Segoe MDL2 Assets"
                     Content="&#xE713;"/>
-                <Popup Grid.Column="3" Name="SettingsPopup"
+                    <Popup Name="SettingsPopup"
                     IsOpen="False"
                     PlacementTarget="{Binding ElementName=SettingsButton}" Placement="Bottom"
                     HorizontalAlignment="Right" VerticalAlignment="Top">
@@ -1092,19 +1150,18 @@
                     </Border>
                 </Popup>
 
-            <Button
-                Grid.Column="4"
-                Content="&#xD7;" BorderThickness="0"
+                    <Button
+                    Content="&#xD7;" BorderThickness="0"
                 BorderBrush="Transparent"
                 Background="{DynamicResource MainBackgroundColor}"
                 Width="{DynamicResource IconButtonSize}" Height="{DynamicResource IconButtonSize}"
                 HorizontalAlignment="Right" VerticalAlignment="Top"
-                Margin="0,5,5,0"
+                Margin="0,0,0,0"
                 FontFamily="{DynamicResource FontFamily}"
                 Foreground="{DynamicResource MainForegroundColor}" FontSize="{DynamicResource CloseIconFontSize}" Name="WPFCloseButton" />
+                </StackPanel>
             </Grid>
-
-        </DockPanel>
+        </Grid>
 
         <TabControl Name="WPFTabNav" Background="Transparent" Width="Auto" Height="Auto" BorderBrush="Transparent" BorderThickness="0" Grid.Row="1" Grid.Column="0" Padding="-1">
             <TabItem Header="Install" Visibility="Collapsed" Name="WPFTab1">
@@ -1112,7 +1169,7 @@
 
                     <Grid Grid.Row="0" Grid.Column="0" Margin="{DynamicResource TabContentMargin}">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="225" />
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
@@ -1132,20 +1189,22 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="0" Margin="{DynamicResource TabContentMargin}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Grid.Row="0" Margin="{DynamicResource TabContentMargin}">
                         <Grid Background="Transparent">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="45px"/>
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
-                            <StackPanel Background="{DynamicResource MainBackgroundColor}" Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="5">
+                            <StackPanel Background="{DynamicResource MainBackgroundColor}" Orientation="Vertical" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="5">
                                 <Label Content="Recommended Selections:" FontSize="{DynamicResource FontSize}" VerticalAlignment="Center" Margin="2"/>
-                                <Button Name="WPFstandard" Content=" Standard " Margin="2"/>
-                                <Button Name="WPFminimal" Content=" Minimal " Margin="2"/>
-                                <Button Name="WPFClearTweaksSelection" Content=" Clear " Margin="2"/>
-                                <Button Name="WPFGetInstalledTweaks" Content=" Get Installed " Margin="2"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,2,0,0">
+                                    <Button Name="WPFstandard" Content=" Standard " Margin="2" Width="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                                    <Button Name="WPFminimal" Content=" Minimal " Margin="2" Width="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                                    <Button Name="WPFClearTweaksSelection" Content=" Clear " Margin="2" Width="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                                    <Button Name="WPFGetInstalledTweaks" Content=" Show Installed Apps " Margin="2" Width="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                                </StackPanel>
                             </StackPanel>
 
                             <Grid Name="tweakspanel" Grid.Row="1">
@@ -1163,22 +1222,22 @@
                         </Grid>
                     </ScrollViewer>
                     <Border Grid.Row="1" Background="{DynamicResource MainBackgroundColor}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" CornerRadius="5" HorizontalAlignment="Stretch" Padding="10">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="0">
-                            <Button Name="WPFTweaksbutton" Content="Run Tweaks" Margin="5"/>
-                            <Button Name="WPFUndoall" Content="Undo Selected Tweaks" Margin="5"/>
-                        </StackPanel>
+                        <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="0">
+                            <Button Name="WPFTweaksbutton" Content="Run Tweaks" Margin="5" Width="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                            <Button Name="WPFUndoall" Content="Undo Selected Tweaks" Margin="5" Width="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                        </WrapPanel>
                     </Border>
                 </Grid>
             </TabItem>
             <TabItem Header="Config" Visibility="Collapsed" Name="WPFTab3">
-                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="{DynamicResource TabContentMargin}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="{DynamicResource TabContentMargin}">
                     <Grid Name="featurespanel" Grid.Row="1" Background="Transparent">
                     </Grid>
                 </ScrollViewer>
             </TabItem>
             <TabItem Header="Updates" Visibility="Collapsed" Name="WPFTab4">
-                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="{DynamicResource TabContentMargin}">
-                    <Grid Background="Transparent">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="{DynamicResource TabContentMargin}">
+                    <Grid Background="Transparent" MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ScrollViewer}}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>  <!-- Row for the 3 columns -->
                             <RowDefinition Height="Auto"/>  <!-- Row for Windows Version -->
@@ -1195,7 +1254,7 @@
                             <!-- Default Settings -->
                             <Border Grid.Column="0" Style="{StaticResource BorderStyle}">
                                 <StackPanel>
-                                    <Button Name="WPFFixesUpdate"
+                                    <Button Name="WPFUpdatesdefault"
                                             FontSize="{DynamicResource ConfigTabButtonFontSize}"
                                             Content="Default Settings"
                                             Margin="10,5"
@@ -1227,7 +1286,7 @@
                                              Foreground="{DynamicResource MainForegroundColor}">
                                         <Run FontWeight="Bold">Balanced Security Configuration</Run>
                                         <LineBreak/>
-                                         - Feature updates delayed by 2 years
+                                         - Feature updates delayed by 365 days
                                         <LineBreak/>
                                          - Security updates installed after 4 days
                                         <LineBreak/><LineBreak/>
@@ -1269,214 +1328,6 @@
                         <!-- Future Implementation: Add Windows Version to updates panel -->
                         <Grid Name="updatespanel" Grid.Row="1" Background="Transparent">
                         </Grid>
-                    </Grid>
-                </ScrollViewer>
-            </TabItem>
-            <TabItem Header="MicroWin" Visibility="Collapsed" Name="WPFTab5">
-                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="{DynamicResource TabContentMargin}">
-                <Grid Width="Auto" Height="Auto">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="3*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Border Grid.Row="0" Grid.Column="0"
-                        Style="{StaticResource BorderStyle}"
-                        VerticalAlignment="Stretch"
-                        HorizontalAlignment="Stretch">
-                    <StackPanel Name="MicrowinMain" Background="{DynamicResource MainBackgroundColor}" SnapsToDevicePixels="True" Grid.Column="0" Grid.Row="0">
-                        <StackPanel Background="Transparent" SnapsToDevicePixels="True" Margin="1">
-                            <CheckBox x:Name="WPFMicrowinDownloadFromGitHub" Content="Download oscdimg.exe from CTT Github repo" IsChecked="True" Margin="{DynamicResource MicrowinCheckBoxMargin}" />
-                            <TextBlock Margin="5" Padding="1" TextWrapping="Wrap" Foreground="{DynamicResource ComboBoxForegroundColor}">
-                                Choose a Windows ISO file that you've downloaded <LineBreak/>
-                                Check the status in the console
-                            </TextBlock>
-                            <Rectangle Fill="{DynamicResource MainForegroundColor}" Height="2" HorizontalAlignment="Stretch" Margin="0,10,0,10"/>
-                            <TextBlock Margin="5" Padding="1" TextWrapping="Wrap" Foreground="{DynamicResource ComboBoxForegroundColor}" ToolTip="Scratch directories act as a custom destination for image files"><Bold>Scratch directory settings (optional)</Bold></TextBlock>
-                            <CheckBox x:Name="WPFMicrowinISOScratchDir" Content="Use ISO directory for ScratchDir " IsChecked="False" Margin="{DynamicResource MicrowinCheckBoxMargin}"
-                                ToolTip="Check this to use the path of the ISO file you specify as a scratch directory" />
-                            <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" /> <!-- Takes the remaining space -->
-                                <ColumnDefinition Width="30" /> <!-- Fixed width for Button -->
-                            </Grid.ColumnDefinitions>
-                                <TextBox Name="MicrowinScratchDirBox" Background="Transparent" BorderBrush="{DynamicResource MainForegroundColor}"
-                                        Text="Scratch"
-                                        Margin="2"
-                                        IsReadOnly="False"
-                                        ToolTip="Specify an alternate path for the scratch directory"
-                                        Grid.Column="0"
-                                        VerticalAlignment="Center"
-                                        Foreground="{DynamicResource LabelboxForegroundColor}">
-                                </TextBox>
-                                <Button Name="MicrowinScratchDirBT"
-                                    Width="Auto"
-                                    Height="Auto"
-                                    Grid.Column="1"
-                                    Margin="2"
-                                    Padding="1"  VerticalAlignment="Center">
-                                    <Button.Content>
-                                    ...
-                                    </Button.Content>
-                                </Button>
-                            </Grid>
-                            <Rectangle Fill="{DynamicResource MainForegroundColor}" Height="2" HorizontalAlignment="Stretch" Margin="0,10,0,10"/>
-                            <TextBox Name="MicrowinFinalIsoLocation" Background="Transparent" BorderBrush="{DynamicResource MainForegroundColor}"
-                                Text="ISO location will be printed here"
-                                Margin="2"
-                                IsReadOnly="True"
-                                TextWrapping="Wrap"
-                                Foreground="{DynamicResource LabelboxForegroundColor}"
-                            />
-                            <RadioButton x:Name="ISOmanual" Content="Select your own ISO" GroupName="Options" Margin="0,10,0,0" IsChecked="True"/>
-                            <RadioButton x:Name="ISOdownloader" Content="Get newest ISO automatically" GroupName="Options" Margin="0,5,0,5"/>
-                            <ComboBox x:Name="ISORelease" Visibility="Collapsed"/>
-                            <ComboBox x:Name="ISOLanguage" Visibility="Collapsed"/>
-                            <Button Name="WPFGetIso" Margin="2" Padding="15">
-                                <Button.Content>
-                                    <TextBlock Background="Transparent" Foreground="{DynamicResource ButtonForegroundColor}">
-                                        Get Windows <Underline>I</Underline>SO
-                                    </TextBlock>
-                                </Button.Content>
-                            </Button>
-                        </StackPanel>
-                        <!-- Visibility="Hidden" -->
-                        <StackPanel Name="MicrowinOptionsPanel" HorizontalAlignment="Left" SnapsToDevicePixels="True" Margin="1" Visibility="Hidden">
-                            <TextBlock Margin="6" Padding="1" TextWrapping="Wrap">Choose Windows SKU</TextBlock>
-                            <ComboBox x:Name = "MicrowinWindowsFlavors" Margin="1" />
-                            <Rectangle Fill="{DynamicResource MainForegroundColor}" Height="2" HorizontalAlignment="Stretch" Margin="0,10,0,10"/>
-                            <CheckBox Name="MicrowinInjectDrivers" Content="Inject drivers (I KNOW WHAT I'M DOING)" Margin="{DynamicResource MicrowinCheckBoxMargin}" IsChecked="False" ToolTip="Path to unpacked drivers all sys and inf files for devices that need drivers"/>
-                            <TextBox Name="MicrowinDriverLocation" Background="Transparent" BorderThickness="1" BorderBrush="{DynamicResource MainForegroundColor}"
-                                Margin="6"
-                                Text=""
-                                IsReadOnly="False"
-                                TextWrapping="Wrap"
-                                Foreground="{DynamicResource LabelboxForegroundColor}"
-                                ToolTip="Path to unpacked drivers all sys and inf files for devices that need drivers"
-                            />
-                            <CheckBox Name="MicrowinImportDrivers" Content="Import drivers from current system" Margin="{DynamicResource MicrowinCheckBoxMargin}" IsChecked="False" ToolTip="Export all third-party drivers from your system and inject them to the MicroWin image"/>
-                            <CheckBox Name="MicrowinCopyVirtIO" Content="Include VirtIO drivers" Margin="{DynamicResource MicrowinCheckBoxMargin}" IsChecked="False" ToolTip="Copy VirtIO Guest Tools drivers to your ISO file. Check this only if you want to use it on QEMU/Proxmox VE"/>
-                            <Rectangle Fill="{DynamicResource MainForegroundColor}" Height="2" HorizontalAlignment="Stretch" Margin="0,10,0,10"/>
-                            <CheckBox Name="WPFMicrowinCopyToUsb" Content="Copy to Ventoy" Margin="{DynamicResource MicrowinCheckBoxMargin}" IsChecked="False" ToolTip="Copy to USB disk with a label Ventoy"/>
-                            <Rectangle Fill="{DynamicResource MainForegroundColor}" Height="2" HorizontalAlignment="Stretch" Margin="0,10,0,10"/>
-                            <TextBlock Margin="6" Padding="1" TextWrapping="Wrap"><Bold>Custom user settings (leave empty for default user)</Bold></TextBlock>
-                            <TextBlock Margin="6" Padding="1" TextWrapping="Wrap">User name (20 characters max.):</TextBlock>
-                            <TextBox Name="MicrowinUserName" Background="Transparent" BorderThickness="1" BorderBrush="{DynamicResource MainForegroundColor}"
-                                Margin="6"
-                                Text=""
-                                IsReadOnly="False"
-                                TextWrapping="Wrap"
-                                Foreground="{DynamicResource LabelboxForegroundColor}"
-                                MaxLength="20"
-                            />
-                            <TextBlock Margin="6" Padding="1" TextWrapping="Wrap">Password (characters will not be shown for your security):</TextBlock>
-                            <PasswordBox Name="MicrowinUserPassword" Background="Transparent" BorderThickness="1" BorderBrush="{DynamicResource MainForegroundColor}"
-                                Margin="6"
-                                PasswordChar="*"
-                                Foreground="{DynamicResource LabelboxForegroundColor}"
-                            />
-                            <Rectangle Fill="{DynamicResource MainForegroundColor}" Height="2" HorizontalAlignment="Stretch" Margin="0,10,0,10"/>
-                            <Button Name="WPFMicrowin" Content="Start the process" Margin="2" Padding="15"/>
-                        </StackPanel>
-                        <StackPanel HorizontalAlignment="Left" SnapsToDevicePixels="True" Margin="1" Visibility="Collapsed">
-                            <TextBlock Name="MicrowinIsoDrive" VerticalAlignment="Center"  Margin="1" Padding="1" TextWrapping="WrapWithOverflow" Foreground="{DynamicResource ComboBoxForegroundColor}"/>
-                            <TextBlock Name="MicrowinIsoLocation" VerticalAlignment="Center"  Margin="1" Padding="1" TextWrapping="WrapWithOverflow" Foreground="{DynamicResource ComboBoxForegroundColor}"/>
-                            <TextBlock Name="MicrowinMountDir" VerticalAlignment="Center"  Margin="1" Padding="1" TextWrapping="WrapWithOverflow" Foreground="{DynamicResource ComboBoxForegroundColor}"/>
-                            <TextBlock Name="MicrowinScratchDir" VerticalAlignment="Center"  Margin="1" Padding="1" TextWrapping="WrapWithOverflow" Foreground="{DynamicResource ComboBoxForegroundColor}"/>
-                        </StackPanel>
-                    </StackPanel>
-                    </Border>
-                    <Border
-                        Style="{StaticResource BorderStyle}"
-                        VerticalAlignment="Stretch"
-                        HorizontalAlignment="Stretch"
-                        Grid.Row="0" Grid.Column="1">
-                        <StackPanel HorizontalAlignment="Left" Background="{DynamicResource MainBackgroundColor}" SnapsToDevicePixels="True" Visibility="Visible">
-
-                            <Grid Name = "BusyMessage" Visibility="Collapsed">
-                              <TextBlock Name = "BusyText" Text="NBusy" Padding="22,2,1,1" />
-                              <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" FontFamily="Segoe MDL2 Assets"
-                                  FontSize="{DynamicResource IconFontSize}" Margin="16,0,0,0">&#xE701;</TextBlock>
-                            </Grid>
-
-                            <TextBlock x:Name = "asciiTextBlock"
-                                xml:space ="preserve"
-                                HorizontalAlignment = "Center"
-                                Margin = "0"
-                                VerticalAlignment = "Top"
-                                Height = "Auto"
-                                Width = "Auto"
-                                FontSize = "{DynamicResource MicroWinLogoSize}"
-                                FontFamily = "Courier New"
-                            >
-  /\/\  (_)  ___  _ __   ___  / / /\ \ \(_) _ __
- /    \ | | / __|| '__| / _ \ \ \/  \/ /| || '_ \
-/ /\/\ \| || (__ | |   | (_) | \  /\  / | || | | |
-\/    \/|_| \___||_|    \___/   \/  \/  |_||_| |_|
-                            </TextBlock>
-
-                            <TextBlock Margin="15,15,15,0"
-                                Padding="8,8,8,0"
-                                VerticalAlignment="Center"
-                                TextWrapping="WrapWithOverflow"
-                                Height = "Auto"
-                                Width = "Auto"
-                                Foreground="{DynamicResource ComboBoxForegroundColor}">
-                                <Bold>MicroWin features:</Bold><LineBreak/>
-                                - Remove Telemetry and Tracking <LineBreak/>
-                                - Fast Install using either the "User" local account or the account of your choosing <LineBreak/>
-                                - No internet requirement for install <LineBreak/>
-                                - Apps debloat <LineBreak/>
-                                <LineBreak/>
-                                <LineBreak/>
-
-                                <Bold>INSTRUCTIONS</Bold> <LineBreak/>
-                                - Download a Windows 11 ISO through the following options: <LineBreak/>
-                                    <TextBlock Margin="15,0,0,0" Text="- Select your own ISO: Manually download the latest Windows 11 image from " Foreground="{DynamicResource ComboBoxForegroundColor}"/>
-                                    <TextBlock Name="Win11DownloadLink" Style="{StaticResource HoverTextBlockStyle}" ToolTip="https://www.microsoft.com/software-download/windows11">Microsoft</TextBlock>. <LineBreak/>
-                                    <TextBlock Margin="15,0,0,0" Text="- Get newest ISO automatically: Choose Windows 11 Edition and preferred language." Foreground="{DynamicResource ComboBoxForegroundColor}"/> <LineBreak/>
-                                May take several minutes to process the ISO depending on your machine and connection <LineBreak/>
-                                - Put it somewhere on the C:\ drive so it is easily accessible <LineBreak/>
-                                - Launch WinUtil and MicroWin  <LineBreak/>
-                                - Click on the "Select Windows ISO" button and wait for WinUtil to process the image <LineBreak/>
-                                It will be processed and unpacked which may take some time <LineBreak/>
-                                - Once complete, choose which Windows flavor you want to base your image on <LineBreak/>
-                                - Click the "Start Process" button <LineBreak/>
-                                The process of creating the Windows image may take some time, please check the console and wait for it to say "Done" <LineBreak/>
-                                - Once complete, the target ISO file will be in the directory you have specified <LineBreak/>
-                                - Copy this image to your Ventoy USB Stick, boot to this image, gg
-                                <LineBreak/>
-                                If you are injecting drivers ensure you put all your inf, sys, and dll files for each driver into a separate directory <LineBreak/><LineBreak/>
-                                <Bold>Installing VirtIO drivers</Bold><LineBreak/>
-                                If you plan on using your ISO on QEMU/Proxmox VE, you can bundle VirtIO drivers with your ISO to automatically install drivers. Simply tick the "Include VirtIO drivers" checkbox before starting the process. Then, follow these instructions:<LineBreak/><LineBreak/>
-                                    <TextBlock TextWrapping="WrapWithOverflow" Margin="15,0,0,0" Text="1. Proceed with Setup until you reach the disk selection screen, in which you won't see any drives" Foreground="{DynamicResource ComboBoxForegroundColor}"/><LineBreak/>
-                                    <TextBlock TextWrapping="WrapWithOverflow" Margin="15,0,0,0" Text="2. Click &quot;Load Driver&quot; and click Browse" Foreground="{DynamicResource ComboBoxForegroundColor}"/><LineBreak/>
-                                    <TextBlock TextWrapping="WrapWithOverflow" Margin="15,0,0,0" Text="3. In the folder selection dialog, point to this path: &quot;D:\VirtIO\vioscsi\w11\amd64&quot; (replace amd64 with ARM64 if you are using Windows on ARM, and &quot;D:&quot; with the drive letter of the ISO)" Foreground="{DynamicResource ComboBoxForegroundColor}"/><LineBreak/>
-                                    <TextBlock TextWrapping="WrapWithOverflow" Margin="15,0,0,0" Text="4. Select all drivers that will appear in the list box and click OK" Foreground="{DynamicResource ComboBoxForegroundColor}"/><LineBreak/>
-                            </TextBlock>
-                            <TextBlock Margin="15,0,15,15"
-                                Padding = "1"
-                                TextWrapping="WrapWithOverflow"
-                                Height = "Auto"
-                                Width = "Auto"
-                                VerticalAlignment = "Top"
-                                Foreground = "{DynamicResource ComboBoxForegroundColor}"
-                                xml:space = "preserve"
-                            >
-<Bold>Driver structure example:</Bold>
-     C:\drivers\
-          |-- Driver1\
-          |   |-- Driver1.inf
-          |   |-- Driver1.sys
-          |-- Driver2\
-          |   |-- Driver2.inf
-          |   |-- Driver2.sys
-          |-- OtherFiles...
-                            </TextBlock>
-                            </StackPanel>
-                        </Border>
                     </Grid>
                 </ScrollViewer>
             </TabItem>

@@ -19,7 +19,7 @@ $InitialSessionState = [System.Management.Automation.Runspaces.InitialSessionSta
 $InitialSessionState.Variables.Add($hashVars)
 
 # Get every private function and add them to the session state
-$functions = Get-ChildItem function:\ | Where-Object { $_.Name -imatch 'winutil|Microwin|WPF' }
+$functions = Get-ChildItem function:\ | Where-Object { $_.Name -imatch 'winutil|WPF' }
 foreach ($function in $functions) {
     $functionDefinition = Get-Content function:\$($function.name)
     $functionEntry = New-Object System.Management.Automation.Runspaces.SessionStateFunctionEntry -ArgumentList $($function.name), $functionDefinition
@@ -247,7 +247,6 @@ $commonKeyEvents = {
             "T" { Invoke-WPFButton "WPFTab2BT"; $keyEventArgs.Handled = $true } # Navigate to Tweaks tab
             "C" { Invoke-WPFButton "WPFTab3BT"; $keyEventArgs.Handled = $true } # Navigate to Config tab
             "U" { Invoke-WPFButton "WPFTab4BT"; $keyEventArgs.Handled = $true } # Navigate to Updates tab
-            "M" { Invoke-WPFButton "WPFTab5BT"; $keyEventArgs.Handled = $true } # Navigate to MicroWin tab
         }
     }
     # Handle Ctrl key combinations for specific actions
@@ -261,7 +260,7 @@ $commonKeyEvents = {
 $sync["Form"].Add_PreViewKeyDown($commonKeyEvents)
 
 $sync["Form"].Add_MouseLeftButtonDown({
-    Invoke-WPFPopup -Action "Hide" -Popups @("Settings", "Theme")
+    Invoke-WPFPopup -Action "Hide" -Popups @("Settings", "Theme", "FontScaling")
     $sync["Form"].DragMove()
 })
 
@@ -279,7 +278,7 @@ $sync["Form"].Add_MouseDoubleClick({
 
 $sync["Form"].Add_Deactivated({
     Write-Debug "WinUtil lost focus"
-    Invoke-WPFPopup -Action "Hide" -Popups @("Settings", "Theme")
+    Invoke-WPFPopup -Action "Hide" -Popups @("Settings", "Theme", "FontScaling")
 })
 
 $sync["Form"].Add_ContentRendered({
@@ -310,38 +309,74 @@ $sync["Form"].Add_ContentRendered({
         Write-Debug "Unable to retrieve information about the primary monitor."
     }
 
-    Invoke-WPFTab "WPFTab1BT"
+    # Check internet connectivity and disable install tab if offline
+    #$isOnline = Test-WinUtilInternetConnection
+    $isOnline = $true # Temporarily force online mode until we can resolve false negatives
+
+    if (-not $isOnline) {
+        # Disable the install tab
+        $sync.WPFTab1BT.IsEnabled = $false
+        $sync.WPFTab1BT.Opacity = 0.5
+        $sync.WPFTab1BT.ToolTip = "Internet connection required for installing applications"
+
+        # Disable install-related buttons
+        $sync.WPFInstall.IsEnabled = $false
+        $sync.WPFUninstall.IsEnabled = $false
+        $sync.WPFInstallUpgrade.IsEnabled = $false
+        $sync.WPFGetInstalled.IsEnabled = $false
+
+        # Show offline indicator
+        Write-Host "Offline mode detected - Install tab disabled" -ForegroundColor Yellow
+
+        # Optionally switch to a different tab if install tab was going to be default
+        Invoke-WPFTab "WPFTab2BT"  # Switch to Tweaks tab instead
+    }
+    else {
+        # Online - ensure install tab is enabled
+        $sync.WPFTab1BT.IsEnabled = $true
+        $sync.WPFTab1BT.Opacity = 1.0
+        $sync.WPFTab1BT.ToolTip = $null
+        Invoke-WPFTab "WPFTab1BT"  # Default to install tab
+    }
+
     $sync["Form"].Focus()
 
     # maybe this is not the best place to load and execute config file?
     # maybe community can help?
-    if ($PARAM_CONFIG) {
+    if ($PARAM_CONFIG -and -not [string]::IsNullOrWhiteSpace($PARAM_CONFIG)) {
         Invoke-WPFImpex -type "import" -Config $PARAM_CONFIG
         if ($PARAM_RUN) {
+            # Wait for any existing process to complete before starting
             while ($sync.ProcessRunning) {
                 Start-Sleep -Seconds 5
             }
             Start-Sleep -Seconds 5
 
             Write-Host "Applying tweaks..."
-            Invoke-WPFtweaksbutton
-            while ($sync.ProcessRunning) {
-                Start-Sleep -Seconds 5
+            if (-not $sync.ProcessRunning) {
+                Invoke-WPFtweaksbutton
+                while ($sync.ProcessRunning) {
+                    Start-Sleep -Seconds 5
+                }
             }
             Start-Sleep -Seconds 5
 
             Write-Host "Installing features..."
-            Invoke-WPFFeatureInstall
-            while ($sync.ProcessRunning) {
-                Start-Sleep -Seconds 5
+            if (-not $sync.ProcessRunning) {
+                Invoke-WPFFeatureInstall
+                while ($sync.ProcessRunning) {
+                    Start-Sleep -Seconds 5
+                }
             }
-
             Start-Sleep -Seconds 5
+
             Write-Host "Installing applications..."
-            while ($sync.ProcessRunning) {
-                Start-Sleep -Seconds 1
+            if (-not $sync.ProcessRunning) {
+                Invoke-WPFInstall
+                while ($sync.ProcessRunning) {
+                    Start-Sleep -Seconds 1
+                }
             }
-            Invoke-WPFInstall
             Start-Sleep -Seconds 5
 
             Write-Host "Done."
@@ -349,32 +384,6 @@ $sync["Form"].Add_ContentRendered({
     }
 
 })
-
-# Add event handlers for the RadioButtons
-$sync["ISOdownloader"].add_Checked({
-    $sync["ISORelease"].Visibility = [System.Windows.Visibility]::Visible
-    $sync["ISOLanguage"].Visibility = [System.Windows.Visibility]::Visible
-})
-
-$sync["ISOmanual"].add_Checked({
-    $sync["ISORelease"].Visibility = [System.Windows.Visibility]::Collapsed
-    $sync["ISOLanguage"].Visibility = [System.Windows.Visibility]::Collapsed
-})
-
-$sync["ISORelease"].Items.Add("24H2") | Out-Null
-$sync["ISORelease"].SelectedItem = "24H2"
-
-$sync["ISOLanguage"].Items.Add("System Language ($(Microwin-GetLangFromCulture -langName $((Get-Culture).Name)))") | Out-Null
-if ($currentCulture -ne "English International") {
-    $sync["ISOLanguage"].Items.Add("English International") | Out-Null
-}
-if ($currentCulture -ne "English") {
-    $sync["ISOLanguage"].Items.Add("English") | Out-Null
-}
-if ($sync["ISOLanguage"].Items.Count -eq 1) {
-    $sync["ISOLanguage"].IsEnabled = $false
-}
-$sync["ISOLanguage"].SelectedIndex = 0
 
 # The SearchBarTimer is used to delay the search operation until the user has stopped typing for a short period
 # This prevents the ui from stuttering when the user types quickly as it dosnt need to update the ui for every keystroke
@@ -416,17 +425,9 @@ $sync["Form"].Add_Loaded({
 $NavLogoPanel = $sync["Form"].FindName("NavLogoPanel")
 $NavLogoPanel.Children.Add((Invoke-WinUtilAssets -Type "logo" -Size 25)) | Out-Null
 
-# Initialize the hashtable
-$winutildir = @{}
 
-# Set the path for the winutil directory
-$winutildir["path"] = "$env:LOCALAPPDATA\winutil\"
-[System.IO.Directory]::CreateDirectory($winutildir["path"]) | Out-Null
-
-$winutildir["logo.ico"] = $winutildir["path"] + "cttlogo.ico"
-
-if (Test-Path $winutildir["logo.ico"]) {
-    $sync["logorender"] = $winutildir["logo.ico"]
+if (Test-Path "$winutildir\logo.ico") {
+    $sync["logorender"] = "$winutildir\logo.ico"
 } else {
     $sync["logorender"] = (Invoke-WinUtilAssets -Type "Logo" -Size 90 -Render)
 }
@@ -441,7 +442,7 @@ $sync["Form"].Add_Activated({
 
 $sync["ThemeButton"].Add_Click({
     Write-Debug "ThemeButton clicked"
-    Invoke-WPFPopup -PopupActionTable @{ "Settings" = "Hide"; "Theme" = "Toggle" }
+    Invoke-WPFPopup -PopupActionTable @{ "Settings" = "Hide"; "Theme" = "Toggle"; "FontScaling" = "Hide" }
 })
 $sync["AutoThemeMenuItem"].Add_Click({
     Write-Debug "About clicked"
@@ -461,7 +462,7 @@ $sync["LightThemeMenuItem"].Add_Click({
 
 $sync["SettingsButton"].Add_Click({
     Write-Debug "SettingsButton clicked"
-    Invoke-WPFPopup -PopupActionTable @{ "Settings" = "Toggle"; "Theme" = "Hide" }
+    Invoke-WPFPopup -PopupActionTable @{ "Settings" = "Toggle"; "Theme" = "Hide"; "FontScaling" = "Hide" }
 })
 $sync["ImportMenuItem"].Add_Click({
     Write-Debug "Import clicked"
@@ -481,7 +482,6 @@ $sync["AboutMenuItem"].Add_Click({
 Author   : <a href="https://github.com/ChrisTitusTech">@christitustech</a>
 UI       : <a href="https://github.com/MyDrift-user">@MyDrift-user</a>, <a href="https://github.com/Marterich">@Marterich</a>
 Runspace : <a href="https://github.com/DeveloperDurp">@DeveloperDurp</a>, <a href="https://github.com/Marterich">@Marterich</a>
-MicroWin : <a href="https://github.com/KonTy">@KonTy</a>, <a href="https://github.com/CodingWonders">@CodingWonders</a>
 GitHub   : <a href="https://github.com/ChrisTitusTech/winutil">ChrisTitusTech/winutil</a>
 Version  : <a href="https://github.com/ChrisTitusTech/winutil/releases/tag/$($sync.version)">$($sync.version)</a>
 "@
@@ -504,6 +504,31 @@ $sync["SponsorMenuItem"].Add_Click({
         $authorInfo += "An error occurred while fetching or processing the sponsors: $_`n"
     }
     Show-CustomDialog -Title "Sponsors" -Message $authorInfo -EnableScroll $true
+})
+
+# Font Scaling Event Handlers
+$sync["FontScalingButton"].Add_Click({
+    Write-Debug "FontScalingButton clicked"
+    Invoke-WPFPopup -PopupActionTable @{ "Settings" = "Hide"; "Theme" = "Hide"; "FontScaling" = "Toggle" }
+})
+
+$sync["FontScalingSlider"].Add_ValueChanged({
+    param($slider)
+    $percentage = [math]::Round($slider.Value * 100)
+    $sync.FontScalingValue.Text = "$percentage%"
+})
+
+$sync["FontScalingResetButton"].Add_Click({
+    Write-Debug "FontScalingResetButton clicked"
+    $sync.FontScalingSlider.Value = 1.0
+    $sync.FontScalingValue.Text = "100%"
+})
+
+$sync["FontScalingApplyButton"].Add_Click({
+    Write-Debug "FontScalingApplyButton clicked"
+    $scaleFactor = $sync.FontScalingSlider.Value
+    Invoke-WinUtilFontScaling -ScaleFactor $scaleFactor
+    Invoke-WPFPopup -Action "Hide" -Popups @("FontScaling")
 })
 
 $sync["Form"].ShowDialog() | out-null

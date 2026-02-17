@@ -4,10 +4,8 @@ function Invoke-WPFInstall {
         [PSObject[]]$PackagesToInstall = $($sync.selectedApps | Foreach-Object { $sync.configs.applicationsHashtable.$_ })
     )
     <#
-
     .SYNOPSIS
         Installs the selected programs using winget, if one or more of the selected programs are already installed on the system, winget will try and perform an upgrade if there's a newer version to install.
-
     #>
 
     if($sync.ProcessRunning) {
@@ -34,15 +32,16 @@ function Invoke-WPFInstall {
 
         try {
             $sync.ProcessRunning = $true
-            if($packagesWinget.Count -gt 0) {
+            if($packagesWinget.Count -gt 0 -and $packagesWinget -ne "0") {
+                Show-WPFInstallAppBusy -text "Installing apps..."
                 Install-WinUtilWinget
                 Install-WinUtilProgramWinget -Action Install -Programs $packagesWinget
-
             }
             if($packagesChoco.Count -gt 0) {
                 Install-WinUtilChoco
                 Install-WinUtilProgramChoco -Action Install -Programs $packagesChoco
             }
+            Hide-WPFInstallAppBusy
             Write-Host "==========================================="
             Write-Host "--      Installs have finished          ---"
             Write-Host "==========================================="
